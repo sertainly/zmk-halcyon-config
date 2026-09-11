@@ -11,13 +11,28 @@
 #include <dt-bindings/zmk/pointing.h>
 
 // Ported from the QMK/Vial keymap (sertainly.vil.json).
-// Vial had TAPPING_TERM = 175 ms, ZMK defaults to 200 ms.
+// Relevant Vial "settings" entries (QSIDs per vial-gui qmk_settings.json):
+//   7          Tapping Term             = 200 ms
+//              (QSID 4 = 175 is the Auto Shift timeout; Auto Shift (QSID 3) is off)
+//   8, bit 1   Ignore Mod Tap Interrupt = on   (value 2)
+//   8, bit 2   Tapping Force Hold       = off
+//
+// With "Ignore Mod Tap Interrupt" QMK decides tap vs. hold purely by the tapping
+// term; pressing another key while the mod-tap is held does not force a hold.
+// ZMK's &mt defaults to flavor "hold-preferred", which resolves to hold as soon
+// as any other key is pressed, so a fast roll like M then another letter sent
+// Alt+<letter>. "tap-preferred" is the ZMK equivalent of the QMK behaviour.
+// quick-tap-ms reproduces QMK's tap-then-hold key repeat (Tapping Force Hold off).
 &mt {
-    tapping-term-ms = <175>;
+    flavor = "tap-preferred";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <200>;
 };
 
+// &lt already defaults to "tap-preferred"; only align the timing.
 &lt {
-    tapping-term-ms = <175>;
+    tapping-term-ms = <200>;
+    quick-tap-ms = <200>;
 };
 
 / {
